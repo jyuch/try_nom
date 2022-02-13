@@ -4,8 +4,8 @@ use nom::{
     branch::permutation,
 };
 use nom::bytes::complete::tag;
-use nom::character::complete::{digit1, space1};
-use nom::combinator::map_res;
+use nom::character::complete::{digit1, space0, space1};
+use nom::combinator::{map, map_res};
 
 #[allow(dead_code)]
 fn to_datetime(input: &str) -> ParseResult<DateTime<Local>> {
@@ -36,6 +36,15 @@ fn datetime(input: &str) -> IResult<&str, DateTime<Local>> {
     )(input)
 }
 
+#[allow(dead_code)]
+fn start_datetime(input: &str) -> IResult<&str, DateTime<Local>> {
+    map(
+        permutation((tag("開始"), space0, tag(":"), space0, datetime)),
+        |(_, _, _, _, d): (&str, &str, &str, &str, DateTime<Local>)| -> DateTime<Local>  {
+            d
+        })(input)
+}
+
 #[test]
 fn to_datetime_can_parse_robocopy_datetime_format() {
     let expected = Local.ymd(2022, 2, 12).and_hms(19, 58, 39);
@@ -47,5 +56,12 @@ fn to_datetime_can_parse_robocopy_datetime_format() {
 fn datetime_can_parse_robocopy_datetime_format() {
     let expected = Local.ymd(2022, 2, 12).and_hms(19, 58, 39);
     let (_, actual) = datetime("2022年2月12日 19:58:39").unwrap();
+    assert_eq!(expected, actual);
+}
+
+#[test]
+fn start_datetime_can_parse_robocopy_start_datetime() {
+    let expected = Local.ymd(2022, 2, 12).and_hms(19, 58, 6);
+    let (_, actual) = start_datetime("開始: 2022年2月12日 19:58:06").unwrap();
     assert_eq!(expected, actual);
 }
