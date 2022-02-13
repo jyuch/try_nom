@@ -13,7 +13,7 @@ fn to_datetime(input: &str) -> ParseResult<DateTime<Local>> {
 }
 
 #[allow(dead_code)]
-fn datetime(intput: &str) -> IResult<&str, DateTime<Local>> {
+fn datetime(input: &str) -> IResult<&str, DateTime<Local>> {
     map_res(
         permutation((
             digit1,
@@ -33,7 +33,7 @@ fn datetime(intput: &str) -> IResult<&str, DateTime<Local>> {
             let s = format!("{}{}{}{}{}{}{}{}{}{}{}{}", s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12);
             to_datetime(s.as_str())
         },
-    )(intput)
+    )(input)
 }
 
 #[test]
