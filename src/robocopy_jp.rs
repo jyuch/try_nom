@@ -1,11 +1,8 @@
 use chrono::{DateTime, Local, ParseResult, TimeZone};
-use nom::{
-    IResult,
-    branch::permutation,
-};
 use nom::bytes::complete::tag;
 use nom::character::complete::{digit1, space0, space1};
 use nom::combinator::{map, map_res};
+use nom::{branch::permutation, IResult};
 
 #[allow(dead_code)]
 fn to_datetime(input: &str) -> ParseResult<DateTime<Local>> {
@@ -27,10 +24,27 @@ fn datetime(input: &str) -> IResult<&str, DateTime<Local>> {
             tag(":"),
             digit1,
             tag(":"),
-            digit1)
-        ),
-        |(s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12): (&str, &str, &str, &str, &str, &str, &str, &str, &str, &str, &str, &str)| -> ParseResult<DateTime<Local>> {
-            let s = format!("{}{}{}{}{}{}{}{}{}{}{}{}", s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12);
+            digit1,
+        )),
+        |(s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12): (
+            &str,
+            &str,
+            &str,
+            &str,
+            &str,
+            &str,
+            &str,
+            &str,
+            &str,
+            &str,
+            &str,
+            &str,
+        )|
+         -> ParseResult<DateTime<Local>> {
+            let s = format!(
+                "{}{}{}{}{}{}{}{}{}{}{}{}",
+                s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12
+            );
             to_datetime(s.as_str())
         },
     )(input)
@@ -40,9 +54,8 @@ fn datetime(input: &str) -> IResult<&str, DateTime<Local>> {
 fn start_datetime(input: &str) -> IResult<&str, DateTime<Local>> {
     map(
         permutation((tag("開始"), space0, tag(":"), space0, datetime)),
-        |(_, _, _, _, d): (&str, &str, &str, &str, DateTime<Local>)| -> DateTime<Local>  {
-            d
-        })(input)
+        |(_, _, _, _, d): (&str, &str, &str, &str, DateTime<Local>)| -> DateTime<Local> { d },
+    )(input)
 }
 
 #[test]

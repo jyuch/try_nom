@@ -72,9 +72,10 @@ fn unsigned_integer_can_parse() {
 
 #[allow(dead_code)]
 fn signed_integer(input: &str) -> IResult<&str, i32> {
-    map(permutation((sign, unsigned_integer)), |(s, i): (i32, i32)| -> i32 {
-        s * i
-    })(input)
+    map(
+        permutation((sign, unsigned_integer)),
+        |(s, i): (i32, i32)| -> i32 { s * i },
+    )(input)
 }
 
 #[test]
