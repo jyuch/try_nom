@@ -31,7 +31,7 @@ fn minus_sign_test() {
 #[allow(dead_code)]
 fn sign(input: &str) -> IResult<&str, i32> {
     map(opt(alt((plus_sign, minus_sign))), |s: Option<i32>| -> i32 {
-        s.unwrap_or_else(|| 1)
+        s.unwrap_or(1)
     })(input)
 }
 
